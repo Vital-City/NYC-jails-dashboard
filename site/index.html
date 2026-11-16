@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Violence, deaths and time served in New York City jails</title>
+<link rel="stylesheet" href="https://use.typekit.net/qqk2vto.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&family=Source+Serif+4:opsz,wght@8..60,300&display=swap" rel="stylesheet">
+<style>
+@font-face{font-family:"GascogneTS";src:url("https://vital-city-nyc.github.io/vital-city-design-system/fonts/GascogneTS-Light.ttf") format("truetype");font-weight:300;font-display:swap;}
+:root{
+  --vc-black:#050507;--vc-text:#262626;--vc-cloud:#dddddd;--vc-paper:#f7f7f4;--vc-charcoal:#707175;
+  --vc-orange:#ff7c53;--vc-magenta:#e7466d;--vc-cerulean:#217ebe;--vc-chartreuse:#dde44c;--vc-rose:#cea9be;
+  --vc-sans:"halyard-text",Inter,"Helvetica Neue",Arial,sans-serif;
+  --vc-serif:"GascogneTS","Source Serif 4",Georgia,serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:#fff;color:var(--vc-text);font-family:var(--vc-sans);font-weight:300;line-height:1.5}
+.wrap{max-width:1040px;margin:0 auto;padding:28px 20px 0}
+.preview-bar{background:var(--vc-chartreuse);color:var(--vc-black);font-size:13px;padding:8px 20px;text-align:center;font-weight:700}
+header h1{font-weight:900;font-size:clamp(1.6rem,1.2rem + 1.4vw,2.3rem);line-height:1.1;margin:0 0 8px;color:var(--vc-black)}
+header .dek{font-size:1.05rem;font-weight:300;max-width:46rem;margin:0 0 6px}
+header .meta{font-size:13px;color:var(--vc-charcoal);margin:0 0 22px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);border-top:6px solid var(--vc-black);border-bottom:1px solid var(--vc-black);margin-bottom:30px}
+.stat{padding:14px 20px 16px;border-left:1px solid var(--vc-black);display:flex;flex-direction:column;min-width:0}
+.stat:first-child{border-left:none;padding-left:0}
+.stat:last-child{padding-right:0}
+.stat .idx{font-size:11px;font-weight:700;color:var(--vc-orange);letter-spacing:.08em;margin-bottom:2px}
+.stat .num{font-family:var(--vc-sans);font-weight:900;font-size:3.4rem;line-height:.95;color:var(--vc-orange);letter-spacing:-.02em;margin-top:6px}
+.stat .num small{font-family:var(--vc-sans);font-size:1rem;font-weight:700;color:var(--vc-black);letter-spacing:0;margin-left:6px}
+.stat .delta{font-size:13px;font-weight:300;color:var(--vc-text);margin:-4px 0 10px;line-height:1.35}
+.stat .delta b{font-weight:700}
+.stat .delta .ar{font-size:10px;color:var(--vc-orange);margin-right:4px}
+.stat .delta span.t{font-weight:300;color:var(--vc-charcoal)}
+.stat .what{font-size:14px;font-weight:300;color:var(--vc-text);margin:8px 0 10px;line-height:1.35;min-height:2.7em}
+.stat .spark{margin-top:auto}
+.stat .spark svg{display:block;width:100%;height:46px;overflow:visible}
+.stat .range{display:flex;justify-content:space-between;font-size:10px;color:var(--vc-charcoal);margin-top:3px}
+.stat .vs{font-size:12.5px;margin-top:8px;padding-top:8px;border-top:1px solid var(--vc-cloud);color:var(--vc-text)}
+.stat .vs b{font-weight:700}
+nav.jump{display:flex;flex-wrap:wrap;justify-content:center;gap:0;border-top:1px solid var(--vc-black);border-bottom:1px solid var(--vc-black);margin-bottom:28px}
+nav.jump a{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--vc-black);text-decoration:none;padding:10px 14px;border-right:1px solid var(--vc-cloud)}
+nav.jump a:hover,nav.jump a:focus-visible{background:var(--vc-chartreuse)}
+nav.jump a:first-child{border-left:1px solid var(--vc-cloud)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.card{border:1px solid var(--vc-black);padding:20px 20px 16px;margin-bottom:24px;background:#fff}
+.card h2{font-weight:900;font-size:1.25rem;line-height:1.2;margin:0 0 4px;color:var(--vc-black)}
+.card .cdek{font-size:14px;color:var(--vc-charcoal);margin:0 0 12px}
+.card .src{font-size:12px;color:var(--vc-charcoal);margin-top:10px;border-top:1px solid var(--vc-cloud);padding-top:8px}
+.card .src a{color:var(--vc-charcoal)}
+.section-head{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--vc-black);margin:8px 0 12px;padding-top:6px;border-top:3px solid var(--vc-orange);display:inline-block}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12px;margin:0 0 6px;color:var(--vc-text)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{display:inline-block;width:12px;height:12px}
+.legend i.line{height:3px;width:16px}
+.legend i.dash{height:0;width:16px;border-top:2px dashed var(--vc-charcoal);background:none}
+svg text{font-family:var(--vc-sans)}
+.tip{position:fixed;pointer-events:none;background:#fff;border:1px solid var(--vc-black);padding:6px 9px;font-size:12px;line-height:1.4;display:none;z-index:10;max-width:220px}
+.tip b{font-weight:700}
+.toggle{font-size:12px;margin:0 0 6px}
+.toggle button{font-family:var(--vc-sans);font-size:11px;text-transform:uppercase;letter-spacing:.05em;border:1px solid var(--vc-black);background:#fff;padding:4px 9px;cursor:pointer;margin-right:-1px}
+.toggle button.on{background:var(--vc-black);color:#fff}
+/* deaths grid */
+.dgrid{width:100%;border-collapse:collapse;font-size:12px;font-variant-numeric:tabular-nums}
+.dgrid th{font-weight:700;padding:4px 2px;text-align:center;border-bottom:1px solid var(--vc-black)}
+.dgrid td{text-align:center;padding:3px 2px;border-bottom:1px solid #fff}
+.dgrid td.y{font-weight:700;text-align:left;padding-left:4px}
+.dgrid td.t{font-weight:700;border-left:1px solid var(--vc-cloud)}
+.dgrid td.r{color:var(--vc-charcoal)}
+.dgrid td.c0{color:#bbb}
+.dgrid-wrap{max-height:430px;overflow:auto;border-bottom:1px solid var(--vc-cloud)}
+.split{display:grid;grid-template-columns:3fr 2fr;gap:28px;align-items:start}
+.side .bignum{font-family:var(--vc-serif);font-weight:300;font-size:2.6rem;line-height:1;color:var(--vc-black)}
+.side .lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin:0 0 6px}
+.side p{font-size:14px;margin:6px 0 0}
+.side .block{padding-bottom:18px;margin-bottom:18px;border-bottom:1px solid var(--vc-cloud)}
+.cbar{display:flex;height:26px;margin:8px 0 8px;border:1px solid var(--vc-black)}
+.cbar div{height:100%}
+.ckey{font-size:12px;display:grid;grid-template-columns:1fr auto;gap:2px 10px}
+.ckey i{display:inline-block;width:10px;height:10px;margin-right:6px;vertical-align:-1px}
+details.more summary{cursor:pointer;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--vc-black);padding:8px 0;list-style:none}
+details.more summary::before{content:"+ ";}
+details.more[open] summary::before{content:"− ";}
+@media (max-width:760px){.split{grid-template-columns:1fr}}
+.news{list-style:none;margin:0;padding:0}
+.news li{padding:10px 0;border-bottom:1px solid var(--vc-cloud);display:grid;grid-template-columns:110px 1fr;gap:12px}
+.news .d{font-size:12px;color:var(--vc-charcoal)}
+.news a{color:var(--vc-black);text-decoration:none;font-weight:700}
+.news a:hover{text-decoration:underline}
+.news .s{font-size:12px;color:var(--vc-charcoal);display:block}
+.notes{font-size:13px;max-width:52rem}
+.notes li{margin-bottom:6px}
+footer{background:var(--vc-orange);color:var(--vc-text);padding:28px 20px;margin-top:36px;font-size:13px}
+footer .wrap{padding-top:0}
+@media (max-width:760px){.stat .delta{display:none}nav.jump{flex-wrap:nowrap;overflow-x:auto;justify-content:flex-start;-webkit-overflow-scrolling:touch}nav.jump a{white-space:nowrap}nav.jump a:first-child{border-left:none}.stat .spark,.stat .vs{display:none}.stat .delta{font-size:13px;font-weight:300;color:var(--vc-text);margin:-4px 0 10px;line-height:1.35}
+.stat .delta b{font-weight:700}
+.stat .delta .ar{font-size:10px;color:var(--vc-orange);margin-right:4px}
+.stat .delta span.t{font-weight:300;color:var(--vc-charcoal)}
+.stat .what{min-height:0;margin-bottom:4px}.stats{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.stat .num{font-size:2.6rem}.stat .num small{display:block;margin:4px 0 0;font-size:.9rem}.stat{padding-left:14px;padding-right:14px}.stat:nth-child(odd){border-left:none;padding-left:0}.stat:nth-child(even){padding-right:0}.stat:nth-child(n+3){border-top:1px solid var(--vc-black)}.grid2{grid-template-columns:1fr}.news li{grid-template-columns:1fr;gap:2px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>Violence, deaths and time served in New York City jails</h1>
+  <p class="dek">A running record of the city jail system: how many people are held, how long they stay and how often they are hurt or killed while in custody.</p>
+  <p class="meta" id="meta"></p>
+</header>
+
+<div class="stats" id="stats"></div>
+
+<nav class="jump">
+  <a href="#population">Population</a><a href="#stay">Time in custody</a><a href="#deaths">Deaths</a><a href="#stabbings">Stabbings and slashings</a><a href="#force">Use of force</a><a href="#news">In the news</a><a href="#notes">Notes</a>
+</nav>
+
+<div class="section-head" id="population">Who is held and for how long</div>
+<div class="card">
+  <h2 id="pop-title"></h2>
+  <p class="cdek">Average daily population by month, January 2013 through the latest month available</p>
+  <div class="legend"><span><i class="line" style="background:var(--vc-cerulean)"></i>Average daily population</span><span><i class="dash"></i>Provisional</span><span><i class="dash" style="border-top-color:#e7466d"></i>Planned borough jail capacity</span></div>
+  <div id="c-pop"></div>
+  <p class="src">Source: Vital City compilation of DOC monthly population (2013 to June 2019, and provisional months); rebuilt from NYC Open Data <a href="https://data.cityofnewyork.us/d/94ri-3ium">Inmate Discharges</a> and <a href="https://data.cityofnewyork.us/d/7479-ugqb">Daily Inmates In Custody</a> (July 2019 on). Dashed months will be revised as new data are released. Borough jail capacity from the <a href="https://comptroller.nyc.gov/services/for-the-public/department-of-correction-doc/overview/">NYC Comptroller</a>.</p>
+</div>
+<div class="card">
+  <h2 id="adm-title"></h2>
+  <p class="cdek">New admissions to city jails by month</p>
+  <div id="c-adm"></div>
+  <p class="src">Source: NYC Open Data <a href="https://data.cityofnewyork.us/d/6teu-xtgp">Inmate Admissions</a>, which starts in 2014 and excludes sealed cases.</p>
+</div>
+
+<div class="card" id="stay">
+  <h2 id="los-title"></h2>
+  <p class="cdek">Average length of stay in days for people discharged each year</p>
+  <div class="split"><div>
+  <div class="legend"><span><i style="background:var(--vc-cerulean)"></i>Average days in custody</span></div>
+  <div id="c-los"></div></div>
+  <div class="side">
+    <div class="block"><div class="lbl">Held more than a year</div><div class="bignum" id="over1y"></div><p id="over1y-sub"></p></div>
+    <div><div class="lbl">Most serious charge of people held now</div><div class="cbar" id="cbar"></div><div class="ckey" id="ckey"></div><p id="charge-sub"></p></div>
+  </div></div>
+  <p class="src">Source: Vital City chart (2005–2013); NYC Open Data <a href="https://data.cityofnewyork.us/d/94ri-3ium">Inmate Discharges</a> (2014 on), mean of discharge date minus admission date. Latest year is year to date. Time held and charges from NYC Open Data <a href="https://data.cityofnewyork.us/d/7479-ugqb">Daily Inmates In Custody</a>; charge classes assigned by Vital City from the top charge's Penal Law section (attempts one class lower).</p>
+</div>
+
+<div class="section-head" id="deaths">Deaths in custody</div>
+<div class="card">
+  <h2 id="death-title"></h2>
+  <p class="cdek" id="death-dek"></p>
+  <div class="legend"><span><i style="background:var(--vc-chartreuse)"></i><span id="d-ytd-lbl"></span></span><span><i style="background:#ecf0a6"></i>Rest of year</span><span><i class="line" style="background:var(--vc-orange)"></i>Year-to-date rate per 1,000 ADP</span><span><i class="dash" style="border-top-color:#9b9fbc"></i>Full-year rate per 1,000 ADP</span></div>
+  <div id="c-deaths"></div>
+  <p class="src">Source: Vital City compilation from Freedom of Information Law records, the federal monitor's second status report (Oct. 28, 2022) and author's tracking from 2022 on; ADP as above. Year-to-date rates compare the same months in every year; when deaths run past the latest month of ADP, the most recent ADP is used.</p>
+<h2 style="margin-top:22px">Deaths by month</h2>
+  <p class="cdek">Each cell is one month; darker cells mean more deaths</p>
+  <div class="dgrid-wrap"><table class="dgrid" id="dgrid"></table></div>
+  <p class="src">The discrepancies in counts of in-custody deaths among different sources and record-keeping systems raise real questions about the reliability of these numbers, and the true number may not yet be known.</p>
+</div>
+
+<div class="section-head" id="stabbings">Violence</div>
+<div class="card">
+  <h2 id="stab-title"></h2>
+  <p class="cdek" id="stab-dek"></p>
+  <div class="legend"><span><i style="background:var(--vc-chartreuse)"></i><span id="stab-ytd-label"></span></span><span><i style="background:#ecf0a6"></i>Rest of year</span><span><i class="line" style="background:var(--vc-orange)"></i>Year-to-date rate per 1,000 ADP</span></div>
+  <div id="c-stab"></div>
+  <p class="src">Source: NYC Open Data <a href="https://data.cityofnewyork.us/d/gakf-suji">Inmate Incidents: Slashing and Stabbing</a>; ADP as above.</p>
+</div>
+
+<div class="card" id="force">
+  <h2 id="uof-title"></h2>
+  <p class="cdek">Use of force incidents per 1,000 average daily population, by fiscal year (July to June)</p>
+  <div class="legend"><span><i style="background:var(--vc-chartreuse)"></i>Incidents</span><span><i class="line" style="background:var(--vc-orange)"></i>Rate per 1,000 ADP</span></div>
+  <div id="c-uof"></div>
+  <p class="src">Source: <a href="https://www.nyc.gov/assets/operations/downloads/pdf/mmr2026/doc.pdf">Mayor's Management Report</a>, "Incidents of use of force" and fiscal-year ADP. Updated each September.</p>
+</div>
+
+<div class="section-head" id="news">In the news</div>
+<div class="card">
+  <h2>Recent coverage of deaths in city jails</h2>
+  <p class="cdek">Pulled automatically from news searches each week; listed for tracking, not verified by Vital City</p>
+  <ul class="news" id="newslist"></ul>
+</div>
+
+<div class="section-head" id="notes">Notes on the data</div>
+<ul class="notes">
+  <li><b>Average daily population (ADP)</b> is the denominator for every rate here. Through June 2019 it comes from a Vital City compilation of DOC monthly figures that matches the Mayor's Management Report's fiscal-year ADP; from July 2019 it is rebuilt from Open Data by counting everyone in custody each day. The rebuild runs within about 1% of the official fiscal-year figures.</li>
+  <li><b>Year-to-date rates</b> compare the same months in every year. When incident data run past the latest month of ADP, the most recent ADP is used.</li>
+  <li><b>Use of force</b> is reported by fiscal year only, so that chart is labeled FY and updates once a year.</li>
+  <li><b>Length of stay</b> before 2014 comes from an earlier Vital City chart built on a different source; the Open Data series starts in 2014.</li>
+</ul>
+</div>
+<footer><div class="wrap" id="foot"></div></footer>
+<div class="tip" id="tip"></div>
+
+<script>
+const DATA = {"built":"2026-11-16T19:03:33Z","deaths":{"2000":[3,3,5,0,1,5,2,7,2,1,3,2],"2001":[5,3,3,4,4,4,5,2,2,1,2,1],"2002":[2,1,2,3,3,1,3,5,2,1,1,1],"2003":[4,5,1,0,1,6,2,3,3,2,3,1],"2004":[3,2,3,0,1,3,3,3,1,3,3,0],"2005":[5,1,2,0,3,1,4,3,2,5,1,1],"2006":[6,2,3,2,2,2,3,4,4,1,4,0],"2007":[1,5,2,0,4,3,2,4,0,1,3,5],"2008":[2,2,2,2,1,2,1,2,1,5,1,1],"2009":[1,0,3,0,1,2,1,2,1,1,2,2],"2010":[1,0,3,0,3,2,2,1,2,0,3,0],"2011":[1,1,1,2,1,0,1,2,1,2,0,0],"2012":[2,2,1,2,2,2,1,3,1,3,1,1],"2013":[1,0,1,2,2,1,2,1,6,2,4,2],"2014":[1,1,0,0,3,1,0,0,0,3,1,0],"2015":[2,0,1,1,1,1,0,1,0,2,1,1],"2016":[2,1,1,2,2,1,1,3,0,1,1,0],"2017":[1,0,3,0,0,0,0,1,0,1,0,0],"2018":[2,0,1,0,0,0,1,1,1,1,1,0],"2019":[0,0,0,0,0,2,0,0,0,0,1,0],"2020":[0,0,0,4,2,1,0,0,0,1,2,0],"2021":[1,0,2,2,0,2,0,2,3,2,0,2],"2022":[0,1,2,0,3,3,2,2,3,2,0,1],"2023":[0,1,0,0,2,0,4,1,0,1,0,0],"2024":[2,0,1,0,0,0,1,1,0,0,0,0],"2025":[0,2,2,1,0,2,2,2,1,0,1,2],"2026":[0,0,2,0,2,0,1,2,1,0,1,null]},"adp_annual_pre":{"2000":14717,"2001":14192,"2002":14265,"2003":14157,"2004":13709,"2005":13420,"2006":13788,"2007":14064,"2008":13545,"2009":13197,"2010":13026,"2011":12421,"2012":12082},"adp":{"2013-01":[11747,"compiled",false],"2013-02":[11817,"compiled",false],"2013-03":[11748,"compiled",false],"2013-04":[11623,"compiled",false],"2013-05":[11580,"compiled",false],"2013-06":[11528,"compiled",false],"2013-07":[11595,"compiled",false],"2013-08":[11675,"compiled",false],"2013-09":[11661,"compiled",false],"2013-10":[11973,"compiled",false],"2013-11":[11880,"compiled",false],"2013-12":[11478,"compiled",false],"2014-01":[11296,"compiled",false],"2014-02":[11323,"compiled",false],"2014-03":[11248,"compiled",false],"2014-04":[11056,"compiled",false],"2014-05":[10841,"compiled",false],"2014-06":[10870,"compiled",false],"2014-07":[10816,"compiled",false],"2014-08":[10669,"compiled",false],"2014-09":[10866,"compiled",false],"2014-10":[10885,"compiled",false],"2014-11":[10872,"compiled",false],"2014-12":[10178,"compiled",false],"2015-01":[9809,"compiled",false],"2015-02":[9974,"compiled",false],"2015-03":[9817,"compiled",false],"2015-04":[9681,"compiled",false],"2015-05":[9650,"compiled",false],"2015-06":[9629,"compiled",false],"2015-07":[9566,"compiled",false],"2015-08":[9612,"compiled",false],"2015-09":[9731,"compiled",false],"2015-10":[9868,"compiled",false],"2015-11":[9968,"compiled",false],"2015-12":[9744,"compiled",false],"2016-01":[9739,"compiled",false],"2016-02":[9939,"compiled",false],"2016-03":[9981,"compiled",false],"2016-04":[9838,"compiled",false],"2016-05":[9755,"compiled",false],"2016-06":[9739,"compiled",false],"2016-07":[9678,"compiled",false],"2016-08":[9726,"compiled",false],"2016-09":[9814,"compiled",false],"2016-10":[9755,"compiled",false],"2016-11":[9723,"compiled",false],"2016-12":[9409,"compiled",false],"2017-01":[9366,"compiled",false],"2017-02":[9486,"compiled",false],"2017-03":[9351,"compiled",false],"2017-04":[9250,"compiled",false],"2017-05":[9265,"compiled",false],"2017-06":[9189,"compiled",false],"2017-07":[9151,"compiled",false],"2017-08":[9155,"compiled",false],"2017-09":[9252,"compiled",false],"2017-10":[9174,"compiled",false],"2017-11":[9138,"compiled",false],"2017-12":[8939,"compiled",false],"2018-01":[8899,"compiled",false],"2018-02":[9012,"compiled",false],"2018-03":[8842,"compiled",false],"2018-04":[8580,"compiled",false],"2018-05":[8402,"compiled",false],"2018-06":[8221,"compiled",false],"2018-07":[8145,"compiled",false],"2018-08":[8121,"compiled",false],"2018-09":[8220,"compiled",false],"2018-10":[8213,"compiled",false],"2018-11":[8192,"compiled",false],"2018-12":[7959,"compiled",false],"2019-01":[8223,"compiled",false],"2019-02":[8078,"compiled",false],"2019-03":[7848,"compiled",false],"2019-04":[7623,"compiled",false],"2019-05":[7440,"compiled",false],"2019-06":[7488,"compiled",false],"2019-07":[7226,"opendata",false],"2019-08":[7023,"opendata",false],"2019-09":[7012,"opendata",false],"2019-10":[7043,"opendata",false],"2019-11":[6775,"opendata",false],"2019-12":[6185,"opendata",false],"2020-01":[5506,"opendata",false],"2020-02":[5317,"opendata",false],"2020-03":[5146,"opendata",false],"2020-04":[3995,"opendata",false],"2020-05":[3887,"opendata",false],"2020-06":[3910,"opendata",false],"2020-07":[3895,"opendata",false],"2020-08":[4029,"opendata",false],"2020-09":[4231,"opendata",false],"2020-10":[4458,"opendata",false],"2020-11":[4652,"opendata",false],"2020-12":[4791,"opendata",false],"2021-01":[5055,"opendata",false],"2021-02":[5309,"opendata",false],"2021-03":[5551,"opendata",false],"2021-04":[5595,"opendata",false],"2021-05":[5560,"opendata",false],"2021-06":[5665,"opendata",false],"2021-07":[5736,"opendata",false],"2021-08":[5839,"opendata",false],"2021-09":[5794,"opendata",false],"2021-10":[5456,"opendata",false],"2021-11":[5357,"opendata",false],"2021-12":[5327,"opendata",false],"2022-01":[5425,"opendata",false],"2022-02":[5561,"opendata",false],"2022-03":[5560,"opendata",false],"2022-04":[5444,"opendata",false],"2022-05":[5464,"opendata",false],"2022-06":[5565,"opendata",false],"2022-07":[5638,"opendata",false],"2022-08":[5681,"opendata",false],"2022-09":[5824,"opendata",false],"2022-10":[5874,"opendata",false],"2022-11":[5884,"opendata",false],"2022-12":[5817,"opendata",false],"2023-01":[5909,"opendata",false],"2023-02":[5925,"opendata",false],"2023-03":[5921,"opendata",false],"2023-04":[5956,"opendata",false],"2023-05":[6012,"opendata",false],"2023-06":[6043,"opendata",false],"2023-07":[6154,"opendata",false],"2023-08":[6183,"opendata",false],"2023-09":[6178,"opendata",false],"2023-10":[6187,"opendata",false],"2023-11":[6158,"opendata",false],"2023-12":[6075,"opendata",false],"2024-01":[6116,"opendata",false],"2024-02":[6209,"opendata",false],"2024-03":[6280,"opendata",false],"2024-04":[6303,"opendata",false],"2024-05":[6287,"opendata",false],"2024-06":[6357,"opendata",false],"2024-07":[6359,"opendata",false],"2024-08":[6429,"opendata",false],"2024-09":[6494,"opendata",false],"2024-10":[6552,"opendata",false],"2024-11":[6597,"opendata",false],"2024-12":[6563,"opendata",false],"2025-01":[6584,"opendata",false],"2025-02":[6730,"opendata",false],"2025-03":[6945,"opendata",false],"2025-04":[7223,"opendata",false],"2025-05":[7459,"opendata",false],"2025-06":[7543,"opendata",false],"2025-07":[7590,"opendata",false],"2025-08":[7246,"opendata",false],"2025-09":[7107,"opendata",false],"2025-10":[6993,"opendata",false],"2025-11":[7012,"compiled",true],"2025-12":[6878,"compiled",true],"2026-01":[6818,"compiled",true],"2026-02":[6802,"compiled",true],"2026-03":[6687,"compiled",true],"2026-04":[6679,"compiled",true],"2026-05":[6674,"compiled",true],"2026-06":[6587,"compiled",true],"2026-07":[6551,"compiled",true],"2026-08":[6484,"compiled",true],"2026-09":[6491,"compiled",true],"2026-10":[6205,"opendata",true]},"stab":{"2016":[1,9,1,12,8,10,15,15,22,15,14,12],"2017":[11,16,17,12,6,14,13,5,12,7,9,10],"2018":[13,4,7,8,5,5,2,11,6,10,9,16],"2019":[10,4,7,7,13,12,14,7,14,7,15,10],"2020":[10,5,13,7,8,14,11,7,9,16,12,9],"2021":[14,19,27,40,42,41,28,39,51,38,35,46],"2022":[50,32,66,43,24,39,43,40,30,46,33,32],"2023":[41,23,32,22,26,21,25,47,47,42,25,31],"2024":[29,27,30,24,18,27,16,20,32,22,31,28],"2025":[21,16,16,27,26,35,24,22,28,21,18,28],"2026":[21,19,25,27,29,44,26,29,22,28]},"uof":[[2013,2977,251.7],[2014,3779,331.3],[2015,4409,430.6],[2016,4756,485.8],[2017,4673,491.9],[2018,5175,581.7],[2019,6670,840.3],[2020,6806,1165.2],[2021,7506,1513],[2022,7080,1273.6],[2023,7000,1191.9],[2024,7064,1138.3],[2025,7044,1032.4],[2026,7025,1010.2]],"los":[[2005,48,"chart"],[2006,48,"chart"],[2007,47,"chart"],[2008,48,"chart"],[2009,49,"chart"],[2010,51,"chart"],[2011,54,"chart"],[2012,53,"chart"],[2013,53,"chart"],[2014,56.5,"opendata"],[2015,58.1,"opendata"],[2016,61.4,"opendata"],[2017,63.6,"opendata"],[2018,73.5,"opendata"],[2019,82.2,"opendata"],[2020,89.7,"opendata"],[2021,105.1,"opendata"],[2022,115.5,"opendata"],[2023,103.2,"opendata"],[2024,98.9,"opendata"],[2025,102.8,"opendata"],[2026,107.9,"opendata"]],"admissions":[["2014-01",6176],["2014-02",5400],["2014-03",6370],["2014-04",5883],["2014-05",6234],["2014-06",5942],["2014-07",6057],["2014-08",5640],["2014-09",5710],["2014-10",6022],["2014-11",5135],["2014-12",4007],["2015-01",5124],["2015-02",4877],["2015-03",5336],["2015-04",5415],["2015-05",5314],["2015-06",5274],["2015-07",5535],["2015-08",5195],["2015-09",5096],["2015-10",5215],["2015-11",4751],["2015-12",4347],["2016-01",5352],["2016-02",5112],["2016-03",5327],["2016-04",4956],["2016-05",5150],["2016-06",5035],["2016-07",4791],["2016-08",4926],["2016-09",4764],["2016-10",4707],["2016-11",4263],["2016-12",4150],["2017-01",4968],["2017-02",4163],["2017-03",4960],["2017-04",4699],["2017-05",4834],["2017-06",4899],["2017-07",4521],["2017-08",4581],["2017-09",4345],["2017-10",4486],["2017-11",4088],["2017-12",3662],["2018-01",4252],["2018-02",3540],["2018-03",3700],["2018-04",3737],["2018-05",3872],["2018-06",3682],["2018-07",3488],["2018-08",3711],["2018-09",3248],["2018-10",3546],["2018-11",3161],["2018-12",2902],["2019-01",3546],["2019-02",3087],["2019-03",3189],["2019-04",3105],["2019-05",3187],["2019-06",2833],["2019-07",3127],["2019-08",2778],["2019-09",2726],["2019-10",2782],["2019-11",2211],["2019-12",1673],["2020-01",1982],["2020-02",1852],["2020-03",1377],["2020-04",614],["2020-05",1146],["2020-06",819],["2020-07",973],["2020-08",1185],["2020-09",1574],["2020-10",1562],["2020-11",1285],["2020-12",1245],["2021-01",1364],["2021-02",1237],["2021-03",1476],["2021-04",1277],["2021-05",1393],["2021-06",1521],["2021-07",1559],["2021-08",1507],["2021-09",1352],["2021-10",1317],["2021-11",1217],["2021-12",1287],["2022-01",1363],["2022-02",1461],["2022-03",1626],["2022-04",1550],["2022-05",1697],["2022-06",1752],["2022-07",1717],["2022-08",1768],["2022-09",1873],["2022-10",1823],["2022-11",1611],["2022-12",1536],["2023-01",1868],["2023-02",1643],["2023-03",1881],["2023-04",1860],["2023-05",1932],["2023-06",2006],["2023-07",1957],["2023-08",1911],["2023-09",1808],["2023-10",1847],["2023-11",1819],["2023-12",1613],["2024-01",1929],["2024-02",1890],["2024-03",2051],["2024-04",1915],["2024-05",2084],["2024-06",2014],["2024-07",1944],["2024-08",2055],["2024-09",1953],["2024-10",2089],["2024-11",1922],["2024-12",1791],["2025-01",2152],["2025-02",1837],["2025-03",2113],["2025-04",2094],["2025-05",2030],["2025-06",1958],["2025-07",2193],["2025-08",2094],["2025-09",2089],["2025-10",2092],["2025-11",1820],["2025-12",1775],["2026-01",1887],["2026-02",1707],["2026-03",1993],["2026-04",2030],["2026-05",2080],["2026-06",1869],["2026-07",2005],["2026-08",1880],["2026-09",1938],["2026-10",2110]],"snapshot":["2026-11-16",6661],"over1y":1505,"charges":[["A felony",1115],["B felony",1898],["C felony",1092],["D or E felony",1515],["Misdemeanor",378],["Other or not recorded",663]],"news":[["14 Nov 2026","Davis Vanguard","Ninth Death at Rikers Island in 2026 Renews Calls for Closure","https://news.google.com/rss/articles/CBMiaEFVX3lxTE1XTmJDMzZ5cXozSENzUEk5U29iRjNxbmRoMFpaZm9QRDF0SmxDWW1zcGcteDFHWDlXOVdDeFk2QWtHYmctaWNWbVpvMHRfY0dJQ0dCTzZKVDE0aTdFc3J0VkpOdVhjUlVK?oc=5"],["13 Nov 2026","Gothamist","Rikers detainee's death is at least the 9th in corrections department custody this year","https://news.google.com/rss/articles/CBMiswFBVV95cUxPWjJCeTJOa29jX0duR0lMbnZoWkQyQXdqZjJkRTROTU5VLW1Ncm5DNjc3RHlSM1VFS291Rmw1T3JMQ2JTc3pDMnZPcTh4enY0d3Etc2NXVThVa19fSV9ydEdYa1VGMURkQ3hMVDBGbXBjdXVGU1NuNHRMZ1JnU3gyMklnTTI5VzBCQWFaNlZKVG81VkxLWnNYdzM1VVlRNTE1VGE2RE5qOWlsdk1QR2JzZjlmNA?oc=5"],["12 Nov 2026","The Chief-Leader","Ninth detainee dies in NYC jail custody this year","https://news.google.com/rss/articles/CBMilAFBVV95cUxOWHczSXdTZkhZaEg0MnhiRFRYZTk3YVd3UE1ORF90Vmw3V1VjLTc3dzRCZXBGWm4wNWF4dk5tRk1MeE5IalBEMTlfd3dtUmJEWTBjd0Rua0xNbkY1Nk1PTktDekRfcnU2RThhZVVzUXBZdzJ5SnM0MVVyQVUxNElqY3FEdVNmdTliSzk5MmhhWl96LWxP?oc=5"],["10 Nov 2026","The City Reporter","Ninth Detainee Dies on Rikers Island So Far This Year","https://news.google.com/rss/articles/CBMigwFBVV95cUxPVEtFaFBCaFVlbGtjeC1tUFd2OTU2QlJ3VUw1V2RoZU9ITWd5N0pKUnNxdmhraThycWpJLWIyYXFiSWFJdnpZMEY1ZjBlNWtOS0J1dVhLVTQwWE9oOGM4R2lJZUUwbWVWOU1QakxhYmptaTVlaHN6VWRYZnZOdXlpNlFTbw?oc=5"],["10 Nov 2026","Queens Daily Eagle","Man dies on Rikers Island, marking ninth DOC death this year","https://news.google.com/rss/articles/CBMinwFBVV95cUxOalZfa0RZTFJlOHlsQk5ldGlvOFVydzdSSWxkMjEyWTh6VE11MnphMmRlRUJ3YnMzcWFNVHd3Rk9ubFlqYWFKd3RBR2tDeERPcDByRExLeVlxZHJNVEpRdE5fYVJzMndDSjIxekZvTV9IQXZqam9GbWNsLV95Z0lIQmowU0FrNXVpRXp5MXFEYTEybU9CYkNRRmktQTNJVlk?oc=5"],["10 Nov 2026","amNewYork","Rikers Island death: Subway assault suspect becomes ninth person to die in NYC jail custody this year","https://news.google.com/rss/articles/CBMidEFVX3lxTFBOdDJpUFB2R2NiMUFzV3ZZYnQ3LXdtZ3VkNFBOV284N21neGZEQ0xCRF9ISi0ycndhbUpFNjBqY3hORy1HRzlSR25KMmRjeUlLS2ttMTVFQ3JkejZMaU1qdWpRalJPY2c2YXk2bTljZmJLS2Ny?oc=5"],["10 Nov 2026","New York Daily News","Man held for attempted murder dies at Rikers, 9th DOC custody death this year","https://news.google.com/rss/articles/CBMimwFBVV95cUxNWjlhNUtUM3daaVVhVkt1Z0ZidFZxTERneEs5SXFlWk4tUmZQYXBwVkpvRU93ejNMNnNRdzlQX295YnF5UXhtY20tdHJCTXpGYXd6T1Z4Z2tMRklFVXNBdlJhZEpyTHBwa2cwdVZCU25sVUZLa2dnaldFQjl2SzZFZGduTHZkRkZXVFkxaE1GekR1LW51bWZ5S1c3NA?oc=5"],["10 Nov 2026","PIX11","Another person dies in NYC custody at Rikers Island as questions continue","https://news.google.com/rss/articles/CBMinwFBVV95cUxOQlhyaG1TY1p0ZnBxaDdsZnVwZU5pRFZ4SGxWOVM1WkVmdERYTElJZEt5SUxITklFYnlJTnlUNnJIN3FmUEdXcElPRDJfQ0wyNl8yOVN0M1JlN0hTdFFFYUk0M2FDS0xGa3BHTnI2TDN1V1ZxMlJQR2c0TWJHV0hCODQzUnBSQUJ3U0lid3JTZHc5a0tjWGJNYzBTbkhCRWfSAaQBQVVfeXFMTlJpVWxVZEpjX0NadkJKd2NkWnZ2aEViSllFZVQwWWZrZTRWemJTbDJDZEFIel9kODNMRGVmTTd6OVM1UmhaREhTNWJVUDhtbU1fMnJ5dXlkOG8wTDVwR0VYZ2VZSmV0NmR0S3R0cFVSdHFCMjVkZVJVaWdxNmJWbXlIQ0x2a0ozZnpobTlrUUZVMEZFYUp0X1BmU3dSQUxHUW44b0k?oc=5"]],"notes":["FY2020 ADP is -1.5% from the MMR figure"]};
+const MONTHS=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const MONTHS_LONG=["January","February","March","April","May","June","July","August","September","October","November","December"];
+const fmt=n=>n.toLocaleString("en-US",{maximumFractionDigits:0});
+const f1=n=>n.toLocaleString("en-US",{minimumFractionDigits:1,maximumFractionDigits:1});
+const f2=n=>n.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+const C={orange:"#ff7c53",chart:"#dde44c",chartLight:"#ecf0a6",cer:"#217ebe",char:"#707175",cloud:"#dddddd",black:"#050507"};
+
+/* ---------- headline helpers: every headline is rebuilt from the data on each run ---------- */
+const NUMW=["zero","one","two","three","four","five","six","seven","eight","nine","ten"];
+const timesWord=m=>{const r=Math.round(m);return (r<=10?NUMW[r]:r)+" times";};
+const pctWord=(cur,base)=>{const p=Math.round(Math.abs(cur/base-1)*100);return p;};
+const ratioPhrase=r=>r>=1.95?`${f1(r)} times as`:r>=1.05?`${Math.round((r-1)*100)}% ${"longer"}`:null;
+
+/* ---------- ADP helpers ---------- */
+const adpKeys=Object.keys(DATA.adp).sort();
+const lastAdpKey=adpKeys[adpKeys.length-1];
+function adpMean(year, mFrom, mTo){ // 1-based months inclusive; falls back to latest available
+  if(year<=2012) return DATA.adp_annual_pre[year];
+  const v=[]; for(let m=mFrom;m<=mTo;m++){const k=year+"-"+String(m).padStart(2,"0"); if(DATA.adp[k]) v.push(DATA.adp[k][0]);}
+  if(v.length) return v.reduce((a,b)=>a+b,0)/v.length;
+  // no ADP yet for these months: use the most recent month available (Vital City rule)
+  const before=adpKeys.filter(k=>k<=year+"-"+String(mTo).padStart(2,"0"));
+  const k=before.length?before[before.length-1]:lastAdpKey; return DATA.adp[k][0];
+}
+function adpThrough(year){ // last month with ADP in that year
+  let m=0; for(let i=1;i<=12;i++){ if(DATA.adp[year+"-"+String(i).padStart(2,"0")]) m=i; } return m;
+}
+
+/* ---------- tooltip ---------- */
+const tip=document.getElementById("tip");
+function showTip(e,html){tip.innerHTML=html;tip.style.display="block";const x=Math.min(e.clientX+14,window.innerWidth-230);tip.style.left=x+"px";tip.style.top=(e.clientY+14)+"px";}
+function hideTip(){tip.style.display="none";}
+
+/* ---------- generic SVG chart ---------- */
+function svgEl(tag,attrs,parent){const el=document.createElementNS("http://www.w3.org/2000/svg",tag);for(const k in attrs)el.setAttribute(k,attrs[k]);if(parent)parent.appendChild(el);return el;}
+function niceMax(v){const raw=v/4;const p=Math.pow(10,Math.floor(Math.log10(raw)));for(const m of [1,1.5,2,2.5,3,4,5,6,8,10]){if(m*p>=raw)return m*p*4;}return 40*p;}
+
+function comboChart(id,{cats,bars,bars2,line,barMax,lineMax,barFmt=fmt,lineFmt=f1,tipFn,labelEvery=1,barLabels=false,lineLabels=true,height=300,lineColor=C.orange,barColor=C.chart,bar2Color=C.chartLight,lastHatched=false,line2=null,line2Color="#9b9fbc",partialNote=null}){
+  const host=document.getElementById(id); host.innerHTML="";
+  const W=host.clientWidth||900, H=height, m={t:22,r:line?46:12,b:28,l:46};
+  const svg=svgEl("svg",{viewBox:`0 0 ${W} ${H}`,width:"100%",role:"img"},host);
+  const iw=W-m.l-m.r, ih=H-m.t-m.b, n=cats.length, bw=iw/n;
+  const bTop=niceMax(barMax||Math.max(...bars.map((b,i)=>b+(bars2?bars2[i]||0:0))));
+  const lTop=line? niceMax(lineMax||Math.max(...line.filter(v=>v!=null),...(line2||[]).filter(v=>v!=null))):1;
+  const yb=v=>m.t+ih-(v/bTop)*ih, yl=v=>m.t+ih-(v/lTop)*ih;
+  for(let i=0;i<=4;i++){const v=bTop*i/4;const y=yb(v);svgEl("line",{x1:m.l,x2:W-m.r,y1:y,y2:y,stroke:C.cloud,"stroke-width":1},svg);
+    const t=svgEl("text",{x:m.l-6,y:y+4,"text-anchor":"end","font-size":11,fill:C.char},svg);t.textContent=barFmt(v);
+    if(line){const t2=svgEl("text",{x:W-m.r+6,y:y+4,"font-size":11,fill:lineColor},svg);t2.textContent=lineFmt(lTop*i/4);} }
+  cats.forEach((c,i)=>{
+    const x=m.l+i*bw+bw*0.14, w=bw*0.72;
+    const b=bars[i]||0, b2=bars2?(bars2[i]||0):0;
+    const partial=lastHatched&&i===n-1;
+    if(partial&&!svg.querySelector("#hatch")){const defs=svgEl("defs",{},svg);const p=svgEl("pattern",{id:"hatch",width:6,height:6,patternUnits:"userSpaceOnUse",patternTransform:"rotate(45)"},defs);svgEl("rect",{width:6,height:6,fill:barColor},p);svgEl("line",{x1:0,y1:0,x2:0,y2:6,stroke:"#fff","stroke-width":2.5},p);}
+    svgEl("rect",{x,y:yb(b),width:w,height:ih-(yb(b)-m.t),fill:partial?"url(#hatch)":barColor,stroke:partial?C.black:"none","stroke-width":partial?1:0,"stroke-dasharray":partial?"3,2":""},svg);
+    if(partial&&partialNote){const t=svgEl("text",{x:x+w/2,y:yb(b+b2)-18,"text-anchor":"middle","font-size":10,fill:C.char},svg);t.textContent=partialNote;}
+    if(b2) svgEl("rect",{x,y:yb(b+b2),width:w,height:yb(b)-yb(b+b2),fill:bar2Color},svg);
+    if(barLabels){const t=svgEl("text",{x:x+w/2,y:yb(b+b2)-4,"text-anchor":"middle","font-size":10,"font-weight":700,fill:C.black},svg);t.textContent=barFmt(b+b2);}
+    if((n-1-i)%labelEvery===0){const t=svgEl("text",{x:x+w/2,y:H-8,"text-anchor":"middle","font-size":11,fill:C.char},svg);t.textContent=c;}
+    const hit=svgEl("rect",{x:m.l+i*bw,y:m.t,width:bw,height:ih,fill:"transparent"},svg);
+    hit.addEventListener("mousemove",e=>showTip(e,tipFn(i)));hit.addEventListener("mouseleave",hideTip);
+  });
+  if(line2){let d2="";line2.forEach((v,i)=>{if(v==null)return;const x=m.l+i*bw+bw/2;d2+=(d2?"L":"M")+x+","+yl(v);});
+    svgEl("path",{d:d2,fill:"none",stroke:line2Color,"stroke-width":2,"stroke-dasharray":"5,3"},svg);
+    line2.forEach((v,i)=>{if(v==null)return;svgEl("circle",{cx:m.l+i*bw+bw/2,cy:yl(v),r:2.5,fill:line2Color},svg);});}
+  if(line){
+    let d="";line.forEach((v,i)=>{if(v==null)return;const x=m.l+i*bw+bw/2;d+=(d?"L":"M")+x+","+yl(v);});
+    svgEl("path",{d,fill:"none",stroke:lineColor,"stroke-width":2.5},svg);
+    line.forEach((v,i)=>{if(v==null)return;const x=m.l+i*bw+bw/2;svgEl("circle",{cx:x,cy:yl(v),r:3,fill:lineColor},svg);
+      if(lineLabels&&(n-1-i)%labelEvery===0){const t=svgEl("text",{x,y:yl(v)-7,"text-anchor":"middle","font-size":10,"font-weight":700,fill:lineColor},svg);t.textContent=lineFmt(v);} });
+    // hit areas above handled by bars
+  }
+}
+
+function lineChart(id,{pts,height=300,zero=true}){
+  const host=document.getElementById(id); host.innerHTML="";
+  const W=host.clientWidth||900,H=height,m={t:16,r:54,b:28,l:52};
+  const svg=svgEl("svg",{viewBox:`0 0 ${W} ${H}`,width:"100%",role:"img"},host);
+  const iw=W-m.l-m.r, ih=H-m.t-m.b;
+  const vals=pts.map(p=>p.v); const top=niceMax(Math.max(...vals)); const bot=zero?0:Math.floor(Math.min(...vals)/1000)*1000;
+  const x=i=>m.l+i/(pts.length-1)*iw, y=v=>m.t+ih-(v-bot)/(top-bot)*ih;
+  for(let i=0;i<=4;i++){const v=bot+(top-bot)*i/4;svgEl("line",{x1:m.l,x2:W-m.r,y1:y(v),y2:y(v),stroke:C.cloud},svg);const t=svgEl("text",{x:m.l-6,y:y(v)+4,"text-anchor":"end","font-size":11,fill:C.char},svg);t.textContent=fmt(v);}
+  pts.forEach((p,i)=>{if(p.m===1&&(+p.y)%2===1||i===0){const t=svgEl("text",{x:x(i),y:H-8,"text-anchor":"middle","font-size":11,fill:C.char},svg);t.textContent=p.y;}});
+  // annotations
+  const cap=3300;svgEl("line",{x1:m.l,x2:W-m.r,y1:y(cap),y2:y(cap),stroke:"#e7466d","stroke-width":1.5,"stroke-dasharray":"6,4"},svg);
+  const ct=svgEl("text",{x:m.l+6,y:y(cap)-6,"font-size":11,"font-weight":700,fill:"#e7466d"},svg);ct.textContent="Borough jails' planned capacity: 3,300";
+  const ann=[["2020-03","Pandemic releases"],["2019-07","Open Data rebuild begins"]];
+  ann.forEach(([k,label])=>{const i=pts.findIndex(p=>p.k===k);if(i<0)return;svgEl("line",{x1:x(i),x2:x(i),y1:m.t,y2:m.t+ih,stroke:C.char,"stroke-dasharray":"3,3"},svg);const t=svgEl("text",{x:x(i)+4,y:m.t+10+ann.findIndex(a=>a[0]===k)*14,"font-size":10,fill:C.char},svg);t.textContent=label;});
+  let solid="",dash="";pts.forEach((p,i)=>{const s=`${x(i)},${y(p.v)}`; if(!p.prov){solid+=(solid?"L":"M")+s;} if(p.prov||(pts[i+1]&&pts[i+1].prov)){dash+=(dash?"L":"M")+s;}});
+  svgEl("path",{d:solid,fill:"none",stroke:C.cer,"stroke-width":2.5},svg);
+  svgEl("path",{d:dash,fill:"none",stroke:C.cer,"stroke-width":2.5,"stroke-dasharray":"4,3"},svg);
+  const last=pts[pts.length-1];svgEl("circle",{cx:x(pts.length-1),cy:y(last.v),r:4,fill:C.cer},svg);
+  const lt=svgEl("text",{x:x(pts.length-1)+6,y:y(last.v)+4,"font-size":11,"font-weight":700,fill:C.cer},svg);lt.textContent=fmt(last.v);
+  const first=pts[0];const ft=svgEl("text",{x:x(0)+4,y:y(first.v)-8,"font-size":11,"font-weight":700,fill:C.cer},svg);ft.textContent=fmt(first.v);
+  const hover=svgEl("line",{y1:m.t,y2:m.t+ih,stroke:C.black,opacity:0},svg);
+  const ov=svgEl("rect",{x:m.l,y:m.t,width:iw,height:ih,fill:"transparent"},svg);
+  ov.addEventListener("mousemove",e=>{const r=svg.getBoundingClientRect();const px=(e.clientX-r.left)*W/r.width;const i=Math.max(0,Math.min(pts.length-1,Math.round((px-m.l)/iw*(pts.length-1))));hover.setAttribute("x1",x(i));hover.setAttribute("x2",x(i));hover.setAttribute("opacity",.4);const p=pts[i];showTip(e,`<b>${MONTHS_LONG[p.m-1]} ${p.y}</b><br>${fmt(p.v)} people${p.prov?"<br><i>Provisional</i>":""}`);});
+  ov.addEventListener("mouseleave",()=>{hover.setAttribute("opacity",0);hideTip();});
+}
+
+/* ---------- build ---------- */
+function build(){
+  // population
+  const pts=adpKeys.map(k=>({k,y:k.slice(0,4),m:+k.slice(5,7),v:DATA.adp[k][0],prov:DATA.adp[k][2]}));
+  lineChart("c-pop",{pts});
+  const peak=pts.reduce((a,b)=>b.v>a.v?b:a), lastP=pts[pts.length-1];
+  const low=pts.reduce((a,b)=>b.v<a.v?b:a);
+  { const ch=lastP.v/pts[0].v-1, sinceLow=Math.round((lastP.v-low.v)/100)*100, p=Math.round(Math.abs(ch)*100);
+    const first=ch<0?`Down ${p}% since 2013`:`Up ${p}% since 2013`;
+    document.getElementById("pop-title").textContent= sinceLow>=500
+      ? `${first}, the jail population has grown by about ${fmt(sinceLow)} people since its ${low.y} low`
+      : `${first}, the jail population is at or near its lowest point since then`; }
+
+  // admissions
+  const A=DATA.admissions;
+  comboChart("c-adm",{cats:A.map(r=>r[0].slice(5)==="01"?r[0].slice(0,4):""),bars:A.map(r=>r[1]),line:null,barColor:C.cer,labelEvery:1,height:200,
+    tipFn:i=>`<b>${MONTHS_LONG[+A[i][0].slice(5)-1]} ${A[i][0].slice(0,4)}</b><br>${fmt(A[i][1])} admissions`});
+  const avg=y=>{const v=A.filter(r=>r[0].startsWith(y)).map(r=>r[1]);return v.reduce((a,b)=>a+b,0)/v.length;};
+  { const lastA=A[A.length-1][0], aY=+lastA.slice(0,4), aM=+lastA.slice(5), useY=aM>=3?aY:aY-1, past=useY<aY||aM===12;
+    const now=avg(String(useY)), then=avg("2016"), r=now/then;
+    const cmp= r<=0.5?`fewer than half as many as in 2016`: r<0.95?`${Math.round((1-r)*100)}% fewer than in 2016`: r<=1.05?`about the same as in 2016`:`${Math.round((r-1)*100)}% more than in 2016`;
+    document.getElementById("adm-title").textContent= !past?`About ${fmt(Math.round(now/50)*50)} people enter the jails each month, ${cmp}`:`About ${fmt(Math.round(now/50)*50)} people entered the jails each month in ${useY}, ${cmp}`; }
+
+  // deaths
+  const dYears=Object.keys(DATA.deaths).map(Number).sort((a,b)=>a-b);
+  const curY=[...dYears].reverse().find(y=>DATA.deaths[y].some(v=>v!=null));
+  while(dYears[dYears.length-1]>curY) dYears.pop();
+  const dLastM=DATA.deaths[curY].reduce((a,v,i)=>v!=null?i+1:a,0);
+  const dTot=y=>DATA.deaths[y].reduce((a,v)=>a+(v||0),0);
+  const dYtd=y=>DATA.deaths[y]?DATA.deaths[y].slice(0,dLastM).reduce((a,v)=>a+(v||0),0):null;
+  const dDone=dLastM===12;
+  const adpCurThrough=adpThrough(curY);
+  const dRate=dYears.map(y=>y===curY&&!dDone?null:dTot(y)/adpMean(y,1,12)*1000);
+  const dYtdRate=dYears.map(y=>dYtd(y)/adpMean(y,1,y===curY?Math.min(dLastM,adpCurThrough):dLastM)*1000);
+  const ytdLbl=`Jan.–${MONTHS[dLastM-1]}.`;
+  comboChart("c-deaths",{cats:dYears.map(y=>y===curY&&!dDone?`${y} so far`:String(y)),bars:dYears.map(dYtd),bars2:dYears.map(y=>y===curY&&!dDone?0:dTot(y)-dYtd(y)),line:dYtdRate,line2:dRate,barLabels:true,lineFmt:f1,labelEvery:2,lineLabels:false,
+    tipFn:i=>{const y=dYears[i];return `<b>${y}${y===curY?" (year in progress)":""}</b><br>${ytdLbl}: ${dYtd(y)} deaths, ${f2(dYtdRate[i])} per 1,000 ADP${y===curY?"":`<br>Full year: ${dTot(y)} deaths, ${f2(dRate[i])} per 1,000 ADP`}`;}});
+  const prevSame=dYtd(curY-1);
+  document.getElementById("death-dek").textContent=`Deaths in custody, including compassionate releases, January through ${MONTHS_LONG[dLastM-1]} of each year with the rest of the year stacked above.${dDone?"":` ${curY} is still in progress.`}`;
+  document.getElementById("d-ytd-lbl").textContent=`January–${MONTHS_LONG[dLastM-1]}`;
+  { const n=dYtd(curY), when=dDone?"in "+(curY-1):"at this point last year";
+    const cmp= prevSame==null?"": n===prevSame?(n===0?`, the same as ${when}`:`, the same number as ${when}`)
+      : prevSame===0?`, compared with none ${when}`: `, ${n>prevSame?"more than":"fewer than"} the ${prevSame} ${when}`;
+    const who= n===0?(dDone?"No one died":"No one has died"): n===1?(dDone?"1 person died":"1 person has died"):(dDone?`${n} people died`:`${n} people have died`);
+    document.getElementById("death-title").textContent=`${who} in city custody ${dDone?"in":"so far in"} ${curY}${cmp}`; }
+  // grid
+  const g=document.getElementById("dgrid");
+  let h=`<thead><tr><th>Year</th>${MONTHS.map((m,i)=>`<th${i===dLastM-1?' style="background:#ff7c53"':''}>${m}</th>`).join("")}<th>Total</th><th>Annual rate</th><th>YTD rate</th></tr></thead><tbody>`;
+  [...dYears].reverse().forEach((y,ri)=>{const row=DATA.deaths[y];const i=dYears.indexOf(y);
+    const ytdAdp=adpMean(y,1,y===curY?Math.min(dLastM,adpCurThrough):dLastM);const ytdR=dYtd(y)/ytdAdp*1000;
+    h+=`<tr><td class="y">${y}</td>${row.map(v=>{if(v==null)return `<td></td>`;const a=Math.min(v/6,1);return `<td class="${v?"":"c0"}" style="background:rgba(231,70,109,${v?0.12+a*0.75:0});${v>=4?"color:#fff;":""}">${v}</td>`;}).join("")}<td class="t">${y===curY?"":dTot(y)}</td><td class="r">${y===curY?"":f1(dRate[i])}</td><td class="r">${f2(ytdR)}</td></tr>`;});
+  g.innerHTML=h+"</tbody>";
+
+  // stabbings
+  const sYears=Object.keys(DATA.stab).map(Number).sort((a,b)=>a-b);
+  const sCurY=sYears[sYears.length-1];
+  const sLastM=DATA.stab[sCurY].length;
+  const sYtd=y=>DATA.stab[y]?DATA.stab[y].slice(0,sLastM).reduce((a,b)=>a+b,0):0;
+  const sTot=y=>DATA.stab[y]?DATA.stab[y].reduce((a,b)=>a+b,0):0;
+  const sRate=sYears.map(y=>sYtd(y)/adpMean(y,1,Math.min(sLastM,adpThrough(y)))*1000);
+  comboChart("c-stab",{cats:sYears.map(String),bars:sYears.map(sYtd),bars2:sYears.map(y=>y===sCurY&&sLastM<12?0:sTot(y)-sYtd(y)),line:sRate,barLabels:true,lineLabels:false,
+    tipFn:i=>{const y=sYears[i];return `<b>${y}</b><br>Jan–${MONTHS[sLastM-1]}: ${sYtd(y)}<br>${y===sCurY&&sLastM<12?"":"Full year: "+sTot(y)+"<br>"}YTD rate: ${f1(sRate[i])} per 1,000 ADP`;}});
+  document.getElementById("stab-ytd-label").textContent=`January–${MONTHS_LONG[sLastM-1]}`;
+  document.getElementById("stab-dek").textContent=`Stabbings and slashings, January through ${MONTHS_LONG[sLastM-1]} of each year, with the rest of the year stacked above`;
+  const sCur=sRate[sRate.length-1], sPrev=sRate[sRate.length-2];
+  { // with fewer than 3 months of the new year, compare the last two full years instead
+    const early=sLastM<3&&sYears.length>=3;
+    const fullRate=y=>sTot(y)/adpMean(y,1,12)*1000;
+    const a=early?fullRate(sCurY-1):sCur, b=early?fullRate(sCurY-2):sPrev;
+    const ch=b>0?Math.round((a/b-1)*100):null;
+    const series=early?sYears.slice(0,-1).map(fullRate):sRate, yrs=early?sYears.slice(0,-1):sYears;
+    const pk=Math.max(...series), pkY=yrs[series.indexOf(pk)];
+    const done=!early&&sLastM===12;
+    const subj=early?`Stabbings and slashings in ${sCurY-1} were`:done?`Stabbings and slashings in ${sCurY} were`:`Stabbings and slashings are`;
+    const lead= ch==null?`${subj} at a rate of ${f1(a)} per 1,000 people`
+      : Math.abs(ch)<3?(early?`${subj} at about the same rate as in ${sCurY-2} after adjusting for population`:done?`${subj} at about the same rate as in ${sCurY-1} after adjusting for population`:`${subj} on the same pace as last year after adjusting for population`)
+      : (early?`${subj} ${ch>0?"up":"down"} ${Math.abs(ch)}% from ${sCurY-2} after adjusting for population`:done?`${subj} ${ch>0?"up":"down"} ${Math.abs(ch)}% from ${sCurY-1} after adjusting for population`:`${subj} ${ch>0?"up":"down"} ${Math.abs(ch)}% from last year's pace after adjusting for population`);
+    const tail= a>=pk?`, the highest rate in data going back to ${sYears[0]}`: a>=pk*0.85?`, near the ${pkY} peak`: ch>0?`, though still below the ${pkY} peak`:`, and well below the ${pkY} peak`;
+    document.getElementById("stab-title").textContent=lead+tail; }
+
+  // use of force
+  comboChart("c-uof",{cats:DATA.uof.map(r=>"FY"+String(r[0]).slice(2)),bars:DATA.uof.map(r=>r[1]),line:DATA.uof.map(r=>r[2]),labelEvery:2,height:260,lineLabels:true,lineFmt:fmt,
+    tipFn:i=>{const r=DATA.uof[i];return `<b>Fiscal ${r[0]}</b><br>${fmt(r[1])} incidents<br>${f1(r[2])} per 1,000 ADP`;}});
+  const u=DATA.uof, uL=u[u.length-1], uPk=u.reduce((a,b)=>b[2]>a[2]?b:a);
+  { const rates=u.map(r=>r[2]); let k=rates.length-1; while(k>0&&rates[k]<rates[k-1]) k--;
+    const fy=y=>"FY"+String(y).slice(2), mult=uL[2]/u[0][2];
+    const lead= k<rates.length-1 ? (k===rates.length-2?`The use of force rate fell in ${fy(uL[0])}`:`The use of force rate has fallen every year since ${fy(u[k][0])}`)
+      : `The use of force rate rose in ${fy(uL[0])}`;
+    const rose=k===rates.length-1, size= mult>=2.5?`about ${timesWord(mult)}`: mult>=1.95?"about double": mult>=1.15?`about ${Math.round((mult-1)*100)}% above`:null;
+    const tail= size?(rose?` and is now ${size} the ${fy(u[0][0])} level`:` but remains ${size} the ${fy(u[0][0])} level`):`, close to the ${fy(u[0][0])} level`;
+    document.getElementById("uof-title").textContent=lead+tail; }
+
+  // length of stay
+  comboChart("c-los",{height:300,cats:DATA.los.map(r=>"'"+String(r[0]).slice(2)+(r[0]===+DATA.snapshot[0].slice(0,4)?"*":"")),bars:DATA.los.map(r=>r[1]),barColor:C.cer,line:null,barLabels:false,labelEvery:2,
+    tipFn:i=>{const r=DATA.los[i];return `<b>${r[0]}</b><br>${f1(r[1])} days on average${r[2]==="chart"?"<br><i>Earlier source</i>":""}`;}});
+  const tot=DATA.snapshot[1];
+  document.getElementById("over1y").textContent=Math.round(DATA.over1y/tot*100)+"%";
+  document.getElementById("over1y-sub").innerHTML=`<b>${fmt(DATA.over1y)}</b> of the ${fmt(tot)} people in custody on ${new Date(DATA.snapshot[0]+"T12:00").toLocaleDateString("en-US",{month:"short",day:"numeric"})} had been held for more than a year.`;
+  const ccol=["#384984","#217ebe","#9b9fbc","#cea9be","#dddddd","#f7f7f4"];
+  document.getElementById("cbar").innerHTML=DATA.charges.map((c,i)=>`<div style="width:${c[1]/tot*100}%;background:${ccol[i]}" title="${c[0]}: ${fmt(c[1])}"></div>`).join("");
+  document.getElementById("ckey").innerHTML=DATA.charges.map((c,i)=>`<span><i style="background:${ccol[i]};${i>3?"border:1px solid #bbb":""}"></i>${c[0]}</span><span>${Math.round(c[1]/tot*100)}%</span>`).join("");
+  const ab=Math.round((DATA.charges[0][1]+DATA.charges[1][1])/tot*100);
+  document.getElementById("charge-sub").innerHTML=`<b>${ab}%</b> are held on A or B felonies, the most serious classes, which include murder, attempted murder and first-degree robbery.`;
+  const l15=DATA.los.find(r=>r[0]===2015)[1];
+  // a year with fewer than 3 months of releases is too thin to headline; use the last full year
+  const snapY=+DATA.snapshot[0].slice(0,4), snapM=+DATA.snapshot[0].slice(5,7);
+  const losLast=DATA.los[DATA.los.length-1], lL=(losLast[0]===snapY&&snapM<3&&DATA.los.length>1)?DATA.los[DATA.los.length-2]:losLast;
+  const losPrev=DATA.los.find(r=>r[0]===lL[0]-1);
+  { const r=lL[1]/l15;
+    document.getElementById("los-title").textContent= r>=1.95?`People now stay ${f1(r)} times as long as they did in 2015`
+      : r>=1.8?`People now stay nearly twice as long as they did in 2015`
+      : r>=1.05?`People now stay ${Math.round((r-1)*100)}% longer than they did in 2015`
+      : r>0.95?`Average stays are about where they were in 2015`:`Average stays are ${Math.round((1-r)*100)}% shorter than in 2015`; }
+
+  // stats
+  const snap=DATA.snapshot;
+  const spark=(vals,{type="line",hi=null}={})=>{const W=200,H=46,n=vals.length,mx=Math.max(...vals.filter(v=>v!=null)),mn=type==="bar"?0:Math.min(...vals.filter(v=>v!=null))*0.9;
+    const y=v=>H-2-(v-mn)/(mx-mn)*(H-6);let out=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">`;
+    if(type==="bar"){const bw=W/n;vals.forEach((v,i)=>{out+=`<rect x="${i*bw+bw*0.15}" y="${y(v)}" width="${bw*0.7}" height="${H-2-y(v)}" fill="${i===n-1?"#ff7c53":"#c9c9c9"}"/>`;});}
+    else{const x=i=>i/(n-1)*W;out+=`<path d="${vals.map((v,i)=>(i?"L":"M")+x(i)+","+y(v)).join("")}" fill="none" stroke="#050507" stroke-width="1.5" vector-effect="non-scaling-stroke"/>`;
+      out+=`<circle cx="${x(n-1)}" cy="${y(vals[n-1])}" r="3.5" fill="#ff7c53" vector-effect="non-scaling-stroke"/>`;}
+    out+=`<line x1="0" x2="${W}" y1="${H-1}" y2="${H-1}" stroke="#050507" stroke-width="1" vector-effect="non-scaling-stroke"/></svg>`;return out;};
+  const snapD=new Date(snap[0]+"T12:00").toLocaleDateString("en-US",{month:"short",day:"numeric"});
+  const popVals=adpKeys.map(k=>DATA.adp[k][0]);
+  const losR=DATA.los.filter(r=>r[0]>=2014);
+  const dSpark=dYears.filter(y=>y>=2014);
+  const tile=(i,num,unit,what,sp,l,r,vs,dl)=>`<div class="stat"><div class="num">${num}<small>${unit}</small></div><div class="what">${what}</div>${dl||""}<div class="spark">${sp}<div class="range"><span>${l}</span><span>${r}</span></div></div><div class="vs">${vs}</div></div>`;
+  const delta=(cur,prev,fn,abs=false)=>{const ch=abs?cur-prev:Math.round((cur/prev-1)*100);const up=ch>0;return `<div class="delta"><span class="ar">${ch===0?"■":up?"▲":"▼"}</span>${fn(Math.abs(ch),up)}</div>`;};
+  const lastK=lastAdpKey, prevK=(+lastK.slice(0,4)-1)+lastK.slice(4);
+  document.getElementById("stats").innerHTML=
+    tile(1,fmt(snap[1]),"people",`held in city jails on ${snapD}`,spark(popVals),"2013",MONTHS[+lastAdpKey.slice(5)-1]+" "+lastAdpKey.slice(0,4),`<b>${fmt(popVals[0])}</b> held in January 2013`,DATA.adp[prevK]&&delta(DATA.adp[lastK][0],DATA.adp[prevK][0],(c,u)=>`${MONTHS_LONG[+lastK.slice(5)-1]} average <b>${c}% ${u?"above":"below"}</b> a year earlier`))+
+    tile(2,Math.round(lL[1]),"days",`average stay for people released in ${lL[0]}`,spark(losR.map(r=>r[1]),{type:"bar"}),"2014",String(lL[0]),`<b>${Math.round(l15)} days</b> in 2015`,(losPrev?delta(lL[1],losPrev[1],(c,u)=>`<b>${c}% ${u?"longer":"shorter"}</b> than in ${losPrev[0]}`):""))+
+    tile(3,dYtd(curY),"deaths",`in city custody, January${dLastM>1?" through "+MONTHS_LONG[dLastM-1]:""} ${curY}`,spark(dSpark.map(dYtd),{type:"bar"}),"2014",String(curY),(()=>{const ys=dYears.filter(y=>y>=curY-10&&y<curY);const mx=Math.max(...ys.map(dTot));return `<b>${mx}</b> in ${ys.find(y=>dTot(y)===mx)}, the most in the past decade`;})(),(dYtd(curY)===prevSame?`<div class="delta"><span class="ar">■</span>The same as ${dDone?"in":"at this point in"} ${curY-1}</div>`:delta(dYtd(curY),prevSame,(c,u)=>`<b>${c} ${u?"more":"fewer"}</b> than ${dDone?"in":"at this point in"} ${curY-1}`,true)))+
+    tile(4,sYtd(sCurY),"incidents",`stabbings and slashings, January${sLastM>1?" through "+MONTHS_LONG[sLastM-1]:""} ${sCurY}`,spark(sRate),String(sYears[0]),String(sCurY),(()=>{const pkY=sYears.reduce((a,y)=>sYtd(y)>sYtd(a)?y:a,sYears[0]);return pkY===sCurY?`The most for these months since ${sYears[0]}`:`<b>${sYtd(pkY)}</b> in the same months of ${pkY}, the peak`;})(),sYtd(sCurY-1)>0&&delta(sYtd(sCurY),sYtd(sCurY-1),(c,u)=>`<b>${c}% ${u?"more":"fewer"}</b> than in the same months of ${sCurY-1}`));
+  document.getElementById("meta").textContent=`Updated ${new Date(DATA.snapshot[0]+"T12:00").toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})}. Deaths through ${MONTHS_LONG[dLastM-1]} ${curY}, stabbings through ${MONTHS_LONG[sLastM-1]} ${sCurY}, population through ${MONTHS_LONG[+lastAdpKey.slice(5)-1]} ${lastAdpKey.slice(0,4)}, use of force through fiscal ${DATA.uof[DATA.uof.length-1][0]}.`;
+  document.getElementById("newslist").innerHTML=DATA.news.map(n=>`<li><span class="d">${n[0]}</span><span><a href="${n[3]}" target="_blank" rel="noopener">${n[2]}</a><span class="s">${n[1]}</span></span></li>`).join("");
+  document.getElementById("foot").innerHTML=`Updated automatically each week from NYC Open Data, the Mayor's Management Report and Vital City's own records. Data and code: <a href="https://github.com/Vital-City/NYC-jails-dashboard" style="color:#262626">github.com/Vital-City/NYC-jails-dashboard</a>.`;
+}
+build();
+let rt;window.addEventListener("resize",()=>{clearTimeout(rt);rt=setTimeout(build,150);});
+</script>
+</body>
+</html>
