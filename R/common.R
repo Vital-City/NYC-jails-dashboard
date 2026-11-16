@@ -24,7 +24,7 @@ soda <- function(id, params, page = 50000, paged = FALSE) {
     return(read_csv(f, col_types = cols(.default = col_character()), progress = FALSE))
   }
   get_page <- function(offset) {
-    q <- c(params, if (paged) c("$order" = ":id", "$limit" = page, "$offset" = offset) else c("$limit" = 100000))
+    q <- c(params, if (paged) c("$order" = ":id", "$limit" = format(page, scientific = FALSE), "$offset" = format(offset, scientific = FALSE)) else c("$limit" = "100000"))
     url <- paste0(ODP, id, ".csv?",
                   paste(names(q), vapply(as.character(q), URLencode, "", reserved = TRUE), sep = "=", collapse = "&"))
     for (attempt in 1:3) {
