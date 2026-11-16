@@ -1,0 +1,9 @@
+{
+  "deaths_sheet_csv": "PASTE_PUBLISHED_CSV_LINK_FOR_DEATHS_SHEET",
+  "use_of_force_sheet_csv": "PASTE_PUBLISHED_CSV_LINK_FOR_USE_OF_FORCE_SHEET",
+  "splice_month": "2019-07",
+  "snapshot_keep_days": 60,
+  "news_query": "(Rikers OR \"city jail\" OR \"Department of Correction\") (died OR death) New York",
+  "news_days": 60,
+  "news_max_items": 8
+}

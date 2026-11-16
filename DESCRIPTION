@@ -1,0 +1,6 @@
+Package: jailsdashboard
+Title: Data pipeline for the NYC jails dashboard
+Version: 1.0.0
+Description: Pulls NYC jail data each week and rebuilds the dashboard page.
+License: MIT
+Imports: dplyr, readr, lubridate, jsonlite, xml2
