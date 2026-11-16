@@ -1,0 +1,47 @@
+name: Weekly dashboard build
+
+# Rebuilds the page from every source and publishes it. If any check fails,
+# nothing is published, the live page keeps last week's version and GitHub
+# emails you that the run failed.
+on:
+  schedule:
+    - cron: "41 14 * * 1"   # Mondays, 9:41 a.m. New York (winter)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: jails-data
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+      - uses: r-lib/actions/setup-r-dependencies@v2
+      - name: Build data and page
+        run: Rscript R/build.R
+      - name: Commit the new data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add site/
+          git commit -m "Weekly build $(date -u +%F)" || echo "No changes"
+          git pull --rebase
+          git push
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - id: deploy
+        uses: actions/deploy-pages@v4
