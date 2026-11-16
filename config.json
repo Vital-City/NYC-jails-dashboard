@@ -1,6 +1,6 @@
 {
-  "deaths_sheet_csv": "PASTE_PUBLISHED_CSV_LINK_FOR_DEATHS_SHEET",
-  "use_of_force_sheet_csv": "PASTE_PUBLISHED_CSV_LINK_FOR_USE_OF_FORCE_SHEET",
+  "deaths_sheet_csv": "https://docs.google.com/spreadsheets/d/e/2PACX-1vTGVb1e3C80XnH65PPa7ifWTHx2siEWUuMBb_ognipx5QeZ2Hpc109_T6F8bm6GkJPjd7vwzIPIqR2a/pubhtml",
+  "use_of_force_sheet_csv": "https://docs.google.com/spreadsheets/d/e/2PACX-1vSN5sFlsPY1frqnSjDa3FRm6FX7NOf4HqsHLIDzbhXwF46_czPb91jrNXtQmTYLt7DwfBpymM8HtAFb/pub?output=csv",
   "splice_month": "2019-07",
   "snapshot_keep_days": 60,
   "news_query": "(Rikers OR \"city jail\" OR \"Department of Correction\") (died OR death) New York",
