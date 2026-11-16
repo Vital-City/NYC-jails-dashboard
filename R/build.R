@@ -83,6 +83,9 @@ rebuilt <- pop %>% mutate(month = month_key(date)) %>% group_by(month) %>%
 
 # Provisional rebuilt months use the compiled figure where one exists
 rebuilt <- rebuilt %>% left_join(rename(compiled, compiled = adp), by = "month") %>%
+  # a provisional month with no compiled figure is known to run low; leave it out until the
+  # snapshot from the day after the next discharge release makes it exact
+  filter(!(provisional & is.na(compiled))) %>%
   mutate(source = ifelse(provisional & !is.na(compiled), "compiled", source),
          adp = ifelse(provisional & !is.na(compiled), compiled, adp)) %>% select(-compiled)
 
