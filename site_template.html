@@ -124,9 +124,11 @@ footer .wrap{padding-top:0}
 </div>
 <div class="card">
   <h2 id="adm-title"></h2>
-  <p class="cdek">New admissions to city jails by month</p>
+  <p class="cdek" id="adm-dek"></p>
+  <div class="toggle" id="adm-toggle"><button data-mode="month" class="on">By month</button><button data-mode="year">By year</button></div>
+  <div class="legend"><span><i style="background:var(--vc-cerulean)"></i>Men</span><span><i style="background:var(--vc-magenta)"></i>Women</span></div>
   <div id="c-adm"></div>
-  <p class="src">Source: NYC Open Data <a href="https://data.cityofnewyork.us/d/6teu-xtgp">Inmate Admissions</a>, which starts in 2014 and excludes sealed cases.</p>
+  <p class="src">Source: NYC Open Data <a href="https://data.cityofnewyork.us/d/6teu-xtgp">Inmate Admissions</a>, which starts in 2014 and excludes sealed cases. Fewer than 1% of admissions have no gender recorded; they are counted in the totals.</p>
 </div>
 
 <div class="card" id="stay">
@@ -229,12 +231,12 @@ function hideTip(){tip.style.display="none";}
 function svgEl(tag,attrs,parent){const el=document.createElementNS("http://www.w3.org/2000/svg",tag);for(const k in attrs)el.setAttribute(k,attrs[k]);if(parent)parent.appendChild(el);return el;}
 function niceMax(v){const raw=v/4;const p=Math.pow(10,Math.floor(Math.log10(raw)));for(const m of [1,1.5,2,2.5,3,4,5,6,8,10]){if(m*p>=raw)return m*p*4;}return 40*p;}
 
-function comboChart(id,{cats,bars,bars2,line,barMax,lineMax,barFmt=fmt,lineFmt=f1,tipFn,labelEvery=1,barLabels=false,lineLabels=true,height=300,lineColor=C.orange,barColor=C.chart,bar2Color=C.chartLight,lastHatched=false,line2=null,line2Color="#9b9fbc",partialNote=null}){
+function comboChart(id,{cats,bars,bars2,line,barMax,lineMax,barFmt=fmt,lineFmt=f1,tipFn,labelEvery=1,barLabels=false,lineLabels=true,height=300,lineColor=C.orange,barColor=C.chart,bar2Color=C.chartLight,lastHatched=false,line2=null,line2Color="#9b9fbc",partialNote=null,bars3=null,bar3Color="#c9c9c9"}){
   const host=document.getElementById(id); host.innerHTML="";
   const W=host.clientWidth||900, H=height, m={t:22,r:line?46:12,b:28,l:46};
   const svg=svgEl("svg",{viewBox:`0 0 ${W} ${H}`,width:"100%",role:"img"},host);
   const iw=W-m.l-m.r, ih=H-m.t-m.b, n=cats.length, bw=iw/n;
-  const bTop=niceMax(barMax||Math.max(...bars.map((b,i)=>b+(bars2?bars2[i]||0:0))));
+  const bTop=niceMax(barMax||Math.max(...bars.map((b,i)=>b+(bars2?bars2[i]||0:0)+(bars3?bars3[i]||0:0))));
   const lTop=line? niceMax(lineMax||Math.max(...line.filter(v=>v!=null),...(line2||[]).filter(v=>v!=null))):1;
   const yb=v=>m.t+ih-(v/bTop)*ih, yl=v=>m.t+ih-(v/lTop)*ih;
   for(let i=0;i<=4;i++){const v=bTop*i/4;const y=yb(v);svgEl("line",{x1:m.l,x2:W-m.r,y1:y,y2:y,stroke:C.cloud,"stroke-width":1},svg);
@@ -248,7 +250,9 @@ function comboChart(id,{cats,bars,bars2,line,barMax,lineMax,barFmt=fmt,lineFmt=f
     svgEl("rect",{x,y:yb(b),width:w,height:ih-(yb(b)-m.t),fill:partial?"url(#hatch)":barColor,stroke:partial?C.black:"none","stroke-width":partial?1:0,"stroke-dasharray":partial?"3,2":""},svg);
     if(partial&&partialNote){const t=svgEl("text",{x:x+w/2,y:yb(b+b2)-18,"text-anchor":"middle","font-size":10,fill:C.char},svg);t.textContent=partialNote;}
     if(b2) svgEl("rect",{x,y:yb(b+b2),width:w,height:yb(b)-yb(b+b2),fill:bar2Color},svg);
-    if(barLabels){const t=svgEl("text",{x:x+w/2,y:yb(b+b2)-4,"text-anchor":"middle","font-size":10,"font-weight":700,fill:C.black},svg);t.textContent=barFmt(b+b2);}
+    const b3=bars3?(bars3[i]||0):0;
+    if(b3) svgEl("rect",{x,y:yb(b+b2+b3),width:w,height:yb(b+b2)-yb(b+b2+b3),fill:bar3Color},svg);
+    if(barLabels){const t=svgEl("text",{x:x+w/2,y:yb(b+b2+b3)-4,"text-anchor":"middle","font-size":10,"font-weight":700,fill:C.black},svg);t.textContent=barFmt(b+b2+b3);}
     if((n-1-i)%labelEvery===0){const t=svgEl("text",{x:x+w/2,y:H-8,"text-anchor":"middle","font-size":11,fill:C.char},svg);t.textContent=c;}
     const hit=svgEl("rect",{x:m.l+i*bw,y:m.t,width:bw,height:ih,fill:"transparent"},svg);
     hit.addEventListener("mousemove",e=>showTip(e,tipFn(i)));hit.addEventListener("mouseleave",hideTip);
@@ -306,8 +310,29 @@ function build(){
 
   // admissions
   const A=DATA.admissions;
-  comboChart("c-adm",{cats:A.map(r=>r[0].slice(5)==="01"?r[0].slice(0,4):""),bars:A.map(r=>r[1]),line:null,barColor:C.cer,labelEvery:1,height:200,
-    tipFn:i=>`<b>${MONTHS_LONG[+A[i][0].slice(5)-1]} ${A[i][0].slice(0,4)}</b><br>${fmt(A[i][1])} admissions`});
+  // each row: [month, total, men, women]; the rest of the total has no gender recorded
+  const admTip=(label,t,mn,wm)=>`<b>${label}</b><br>${fmt(t)} admissions<br>Men: ${fmt(mn)} (${Math.round(mn/t*100)}%)<br>Women: ${fmt(wm)} (${Math.round(wm/t*100)}%)${t-mn-wm>0?`<br>Not recorded: ${fmt(t-mn-wm)}`:""}`;
+  const drawAdm=mode=>{
+    const lastM=+A[A.length-1][0].slice(5);
+    if(mode==="year"){
+      const ys=[...new Set(A.map(r=>r[0].slice(0,4)))];
+      const sum=(y,k)=>A.filter(r=>r[0].startsWith(y)).reduce((a,r)=>a+r[k],0);
+      const partial=y=>y===ys[ys.length-1]&&lastM<12;
+      comboChart("c-adm",{cats:ys.map(y=>partial(y)?`${y} so far`:y),bars:ys.map(y=>sum(y,2)),bars2:ys.map(y=>sum(y,3)),bars3:ys.map(y=>sum(y,1)-sum(y,2)-sum(y,3)),
+        barColor:C.cer,bar2Color:"#e7466d",line:null,barLabels:true,labelEvery:1,height:240,
+        tipFn:i=>admTip(partial(ys[i])?`${ys[i]}, January–${MONTHS_LONG[lastM-1]}`:ys[i],sum(ys[i],1),sum(ys[i],2),sum(ys[i],3))});
+      document.getElementById("adm-dek").textContent=`New admissions to city jails by year${lastM<12?`; ${A[A.length-1][0].slice(0,4)} runs through ${MONTHS_LONG[lastM-1]}`:""}`;
+    } else {
+      comboChart("c-adm",{cats:A.map(r=>r[0].slice(5)==="01"?r[0].slice(0,4):""),bars:A.map(r=>r[2]),bars2:A.map(r=>r[3]),bars3:A.map(r=>r[1]-r[2]-r[3]),
+        barColor:C.cer,bar2Color:"#e7466d",line:null,labelEvery:1,height:240,
+        tipFn:i=>admTip(`${MONTHS_LONG[+A[i][0].slice(5)-1]} ${A[i][0].slice(0,4)}`,A[i][1],A[i][2],A[i][3])});
+      document.getElementById("adm-dek").textContent="New admissions to city jails by month";
+    }
+    document.querySelectorAll("#adm-toggle button").forEach(b=>b.classList.toggle("on",b.dataset.mode===mode));
+  };
+  window._admMode=window._admMode||"month";
+  drawAdm(window._admMode);
+  document.querySelectorAll("#adm-toggle button").forEach(b=>b.onclick=()=>{window._admMode=b.dataset.mode;drawAdm(b.dataset.mode);});
   const avg=y=>{const v=A.filter(r=>r[0].startsWith(y)).map(r=>r[1]);return v.reduce((a,b)=>a+b,0)/v.length;};
   { const lastA=A[A.length-1][0], aY=+lastA.slice(0,4), aM=+lastA.slice(5), useY=aM>=3?aY:aY-1, past=useY<aY||aM===12;
     const now=avg(String(useY)), then=avg("2016"), r=now/then;
