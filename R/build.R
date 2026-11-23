@@ -139,7 +139,14 @@ if (tail(sx, 1) > 3 * tail(r12, 1)) fail("Latest stabbing month (", tail(sx, 1),
 stab <- split(st$data$n, substr(st$data$month, 1, 4))
 
 ad <- monthly_counts("6teu-xtgp", "admitted_dt", 2014)
-admissions <- lapply(seq_len(nrow(ad$data)), function(i) list(ad$data$month[i], ad$data$n[i]))
+# split by gender (the field has stray spaces, e.g. "M "); rows: month, total, men, women
+adg <- soda("6teu-xtgp", c("$select" = "date_trunc_ym(admitted_dt) as m, gender, count(*) as n",
+                            "$where" = "admitted_dt >= '2014-01-01T00:00:00'", "$group" = "m, gender", "$order" = "m")) %>%
+  transmute(month = substr(m, 1, 7), g = toupper(trimws(coalesce(gender, ""))), n = as.integer(n)) %>%
+  group_by(month) %>% summarise(men = sum(n[g == "M"]), women = sum(n[g == "F"]), .groups = "drop")
+ad$data <- ad$data %>% left_join(adg, by = "month") %>% mutate(men = coalesce(men, 0L), women = coalesce(women, 0L))
+if (any(ad$data$men + ad$data$women > ad$data$n)) fail("Admissions by gender add up to more than the monthly total")
+admissions <- lapply(seq_len(nrow(ad$data)), function(i) list(ad$data$month[i], ad$data$n[i], ad$data$men[i], ad$data$women[i]))
 
 # ---------------------------------------------------------------------------
 # 5. Length of stay (mean days, by year of discharge)
